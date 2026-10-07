@@ -42,7 +42,11 @@ homebrew_casks:
     repository:
       owner: jverhoeks
       name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+      branch: main
+      # deploy key with write access to the tap (secret HOMEBREW_TAP_DEPLOY_KEY)
+      git:
+        url: git@github.com:jverhoeks/homebrew-tap.git
+        private_key: "{{ .Env.HOMEBREW_TAP_DEPLOY_KEY }}"
     directory: Casks
     homepage: https://github.com/jverhoeks/repoidx
     description: Index, search and inspect every git repository on your machine
