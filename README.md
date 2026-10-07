@@ -101,6 +101,7 @@ go install github.com/jverhoeks/repoidx@latest
 
 ```sh
 make build     # ./bin/repoidx
+make install   # into $GOBIN
 make dist      # cross-compiled binaries in ./dist
 ```
 
@@ -623,22 +624,27 @@ internal/indexer     scan / update orchestration
 ## Development
 
 ```sh
-make test      # go test ./...
-make vet
-make build     # CGO_ENABLED=0, version from git describe
-make dist      # darwin, linux, windows × amd64, arm64
+make            # list all targets
+make check      # fmt-check, vet and test (what CI runs)
+make build      # ./bin/repoidx, CGO_ENABLED=0, version from git describe
+make run ARGS="stats -s"
+make install    # into $GOBIN
+make cover      # tests with a coverage summary
+make dist       # darwin, linux, windows × amd64, arm64
+make snapshot   # full local GoReleaser build, nothing published
 ```
 
 Releases are built by [GoReleaser](https://goreleaser.com) when a tag is
-pushed:
+pushed. From an up-to-date, clean `main`:
 
 ```sh
-git tag v0.2.0 && git push origin v0.2.0
+make release TAG=v0.2.0   # runs the checks, tags and pushes the tag
+make release-watch        # follow the Release workflow
 ```
 
 The release workflow builds all platforms, publishes the GitHub release and
-updates the cask in [jverhoeks/homebrew-tap](https://github.com/jverhoeks/homebrew-tap).
-Try it locally with `goreleaser release --snapshot --clean`.
+updates the cask in [jverhoeks/homebrew-tap](https://github.com/jverhoeks/homebrew-tap)
+(over SSH with the deploy key in the `HOMEBREW_TAP_DEPLOY_KEY` secret).
 
 Dependencies: [cobra](https://github.com/spf13/cobra),
 [modernc.org/sqlite](https://gitlab.com/cznic/sqlite) (pure Go SQLite with
